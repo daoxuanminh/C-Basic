@@ -1,0 +1,11 @@
+5
+Dao Van D
+3.5
+Dao van E
+3.6
+Nguyen Van A
+4.5
+Le Thi B
+7.5
+Tran Van C
+8.0
