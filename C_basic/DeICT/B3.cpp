@@ -1,0 +1,184 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <math.h>
+#define MAX 20
+typedef struct node
+{
+    char from_account[20], to_account[20], time_point[20], atm[10];
+    int money;
+    node *pNext;
+} node;
+node *makeNode(node *head, char from_account[MAX], char to_account[MAX], int money, char time_point[MAX], char atm[10])
+{
+    node *newNode = (node *)malloc(sizeof(node));
+    newNode->pNext = NULL;
+    strcpy(newNode->atm, atm);
+    strcpy(newNode->from_account, from_account);
+    strcpy(newNode->to_account, to_account);
+    strcpy(newNode->time_point, time_point);
+    newNode->money = money;
+    return newNode;
+}
+
+node *insert_node(node *head, node *newNode)
+{
+    if (head == NULL)
+    {
+        head = newNode;
+        return head;
+    }
+    node *p = head;
+    while (p->pNext != NULL)
+    {
+        p = p->pNext;
+    }
+    p->pNext = newNode;
+    return head;
+}
+int number_transactions(node *head)
+{
+    node *p = head;
+    int dem = 0;
+    while (p != NULL)
+    {
+        dem++;
+        p = p->pNext;
+    }
+    return dem;
+}
+int total_money_transaction(node *head)
+{
+    node *p = head;
+    int total = 0;
+    while (p != NULL)
+    {
+        total += p->money;
+        p = p->pNext;
+    }
+    return total;
+}
+
+void SelectionSort(char a[][MAX], int n)
+{
+	int min; // chỉ số phần tử nhỏ nhất trong dãy hiện hành
+	for (int  i = 0; i < n - 1; i++){
+		min = i; 
+		for(int j = i + 1; j < n; j++)
+	   	   if (strcmp(a[j],a[min]) < 0)
+		       min = j; // ghi nhận vị trí phần tử nhỏ nhất
+		if (min != i)
+	   	{
+            // swap
+            char tg[MAX];
+            strcpy(tg,a[min]);
+            strcpy(a[min],a[i]);
+            strcpy(a[i],tg);
+        }
+	}
+}
+
+int list_sorted_accounts(node *head)
+{
+    node *p = head;
+    int count = 0; // bien dem so luong tai khoan da tim thay trong list
+    char list[100000][MAX];
+    while (p != NULL)
+    {
+        if (count == 0)
+        {
+            strcpy(list[count], p->from_account);
+            count++;
+            strcpy(list[count], p->to_account);
+            count++;
+            p = p->pNext;
+            continue;
+        }
+        int check1 = 0;
+        for (int i = 0; i < count; i++)
+        {
+            if (strcmp(p->from_account, list[i]) == 0)
+            {
+                check1++;
+                break;
+            }
+        }
+        if (check1 == 0)
+        {
+            strcpy(list[count], p->from_account);
+            count++;
+        }
+        int check2 = 0;
+        for (int i = 0; i < count; i++)
+        {
+            if (strcmp(p->to_account, list[i]) == 0)
+            {
+                check2++;
+                break;
+            }
+        }
+        if (check2 == 0)
+        {
+            strcpy(list[count], p->to_account);
+            count++;
+        }
+        p = p->pNext;
+    }
+    SelectionSort(list,count);
+    for (int i=0;i<count;i++)
+    {
+        printf("%s ",list[i]);
+    }
+    exit(0);
+    return 0;
+}
+
+int checkQuery(char query[], node *head)
+{
+    if (strcmp(query, "?number_transactions") == 0)
+    {
+        // return number_transactions(head);
+    }
+    else if (strcmp(query, "?total_money_transaction") == 0)
+    {
+        // return total_money_transaction(head);
+    }
+    else if (strcmp(query, "?list_sorted_accounts") == 0)
+    {
+        return list_sorted_accounts(head);
+    }
+    else if (strcmp(query, "?total_money_transaction_from") == 0)
+    {
+        // return total_money_transaction_from(head);
+    }
+    else if (strcmp(query, "?inspect_cycle") == 0)
+    {
+        // return inspect_cycle(head);
+    }
+    return 0;
+}
+
+int main()
+{
+    node *head = NULL;
+    char from_account[MAX], to_account[MAX], time_point[MAX], atm[MAX];
+    int money;
+    while (1)
+    {
+        scanf("%s", from_account);
+        if (strcmp(from_account, "#") == 0)
+        {
+            break;
+        }
+        scanf("%s %d %s %s", to_account, &money, time_point, atm);
+        head = insert_node(head, makeNode(head, from_account, to_account, money, time_point, atm));
+    }
+    char result[10000];
+    char query[100];
+    int count = 0;
+    scanf("%s", query);
+    char call[MAX];
+    scanf("%s", call);
+    result[count] = checkQuery(query, head);
+    return 0;
+}
